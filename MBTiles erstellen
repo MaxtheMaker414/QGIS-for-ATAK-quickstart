@@ -1,0 +1,65 @@
+# Alle Zoomstufen einer WMS-Quelle für ein Gebiet in QGIS herunterladen
+
+Da **WMS (Web Map Service)** standardmäßig nur dynamische Kartenbilder liefert und keine Kacheln speichert, wird ein Workaround benötigt.
+
+## 1. Vorbereitung: WMS in QGIS hinzufügen
+
+1. Öffne **QGIS** und gehe zu **Layer → Datenquellenverwaltung**.
+2. Wähle den Reiter **WMS/WMTS**.
+3. Klicke auf **Neue Verbindung** und füge die WMS-URL hinzu (z. B. für Basemap Deutschland):
+   ```
+   https://sgx.geodatenzentrum.de/wms_basemapde?
+   ```
+4. Lade die **Layer-Liste** und wähle die gewünschte Ebene aus (z. B. `basemapde`).
+
+
+## 2. WMS-Kacheln herunterladen mit "XYZ Tiles"
+
+Da WMS keinen Kachelservice bietet, kannst du stattdessen den WMS-Layer als **XYZ-Tiles** speichern.
+
+### 2.1 XYZ Tile Layer aus WMS generieren
+
+1. Lade den **WMS-Layer** in QGIS.
+2. Öffne die **Python-Konsole** (**Erweiterungen → Python-Konsole**).
+3. Füge folgenden Code ein, um eine **XYZ-Tile-URL** aus der WMS-Quelle zu generieren:
+
+   ```python
+   from qgis.core import QgsRasterLayer
+   wms_url = "https://sgx.geodatenzentrum.de/wms_basemapde?"
+   tile_url = f"{wms_url}SERVICE=WMTS&REQUEST=GetTile&LAYER=basemapde&FORMAT=image/png&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+   print(tile_url)
+   ```
+
+4. Kopiere die generierte **URL** und füge sie als **XYZ Tile-Layer** hinzu:
+   - Gehe zu **Datenquellenverwaltung → XYZ Tiles**.
+   - Klicke auf **Neue Verbindung** und füge die generierte URL hinzu.
+
+## 3. Offline-Speicherung mit dem QTiles Plugin
+### 3.1 QTiles-Plugin installieren
+
+1. Gehe zu **Erweiterungen → Erweiterungen verwalten und installieren**.
+2. Suche nach **QTiles** und installiere es.
+
+### 3.2 Kachel-Download starten
+
+1. Gehe zu **Erweiterungen → QTiles**.
+2. Wähle den gewünschten **XYZ Tile-Layer** (den du aus der WMS generiert hast).
+3. Setze das gewünschte **Gebiet** (Bounding Box oder Kartenausschnitt).
+4. **Zoomstufen festlegen** (z. B. 10 bis 18 für gute Detailansicht).
+5. Wähle **Ausgabeformat** (z. B. MBTiles für mobile Nutzung oder als einzelne PNG-Kacheln).
+6. Klicke auf **Erstellen**, um die **Kacheln zu generieren und lokal zu speichern**.
+
+## 4. Alternative: WMS in Raster umwandeln (für statische Speicherung)
+
+Falls du das WMS-Bild als ein **festes Raster speichern** möchtest (anstatt Kacheln):
+
+1. Gehe zu **Raster → Umwandlung → Raster extrahieren (WMS-Layer speichern)**.
+2. Wähle den **WMS-Layer** als Eingabe.
+3. Setze den **Kartenausschnitt und die Auflösung**.
+4. Speicherformat: **GeoTIFF**.
+5. Speichern**.
+
+## 5. Fazit:
+
+- **Für interaktive Karten mit allen Zoomstufen** → Nutze **"XYZ Tiles" + QTiles Plugin**.
+- **Für eine feste Rasterkarte (kein Zoom)** → Speichere den WMS als **GeoTIFF**.
