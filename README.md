@@ -2,8 +2,8 @@
 
 ## 1. Voraussetzungen  
 
-**QGIS** (z. B. QGIS 3.x)  
-- Eine **nicht georeferenzierte Karte** (z. B. Foto, Orthofoto oder eine historische Karte)  
+**QGIS** 
+- Eine Foto, Orthofoto oder eine historische Karte  
 - **Referenzkoordinaten** oder eine geeignete Basiskarte (z. B. OpenStreetMap, Google Satellite)  
 
 ---
