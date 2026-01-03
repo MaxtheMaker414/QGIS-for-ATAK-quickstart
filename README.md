@@ -1,135 +1,194 @@
-# QGIS Georeferencer Quickstart
+QGIS Georeferencer Quickstart
 
-## 1. Voraussetzungen  
+1. Prerequisites
 
-**QGIS** 
-- Eine Foto, Orthofoto oder eine historische Karte  
-- **Referenzkoordinaten** oder eine geeignete Basiskarte (z. B. OpenStreetMap, Google Satellite)  
+QGIS
 
----
+A photo, orthophoto, or a historical map
 
-## 2. Installation erforderlicher Layer  
+Reference coordinates or a suitable basemap (e.g. OpenStreetMap, Google Satellite)
 
-### WMS Layer hinzufügen  
 
-Um eine **WMS-Basiskarte** (z. B. Basemap Deutschland) hinzuzufügen:  
-
-1. Rechtsklick auf **WMS-Layer** → **Neue Verbindung hinzufügen**  
-2. Quelle hinzufügen:  
-
-   ```
-   https://sgx.geodatenzentrum.de/wms_basemapde?
-   ```
-
-### XYZ-Tiles hinzufügen  
-
-Um **XYZ-Kacheln** (z. B. Google Satellite) hinzuzufügen:  
-
-1. Rechtsklick auf **XYZ Tiles** → **Neue Verbindung hinzufügen**  
-2. Quelle hinzufügen:  
-
-   ```
-   http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}
-   ```
 
 ---
 
-## 3. Bild in den Georeferenzierer laden  
+2. Installation of Required Layers
 
-1. Öffne den **Georeferenzierer** über **Layer → Georeferenzierung**.  
-2. Klicke auf **Raster öffnen** (Symbol mit dem Bild).  
-3. Wähle deine **nicht georeferenzierte Karte** aus (z. B. eine historische Karte als PNG, JPG, TIFF).  
+Adding a WMS Layer
 
----
+To add a WMS basemap (e.g. Basemap Germany):
 
-## 4. Passpunkte setzen  
+1. Right-click on WMS Layers → Add New Connection
 
-### Grundlage für die Georeferenzierung wählen  
 
-- **Option 1**: Eine Basiskarte in QGIS laden (z. B. OpenStreetMap) und manuell Punkte übertragen.  
-- **Option 2**: Bekannte Koordinaten von Kartenrändern oder markanten Punkten nutzen.  
+2. Add the source:
 
-### Passpunkte hinzufügen  
+https://sgx.geodatenzentrum.de/wms_basemapde?
 
-1. Klicke auf **GCP-Punkt hinzufügen** (Symbol mit dem roten Kreuz).  
-2. Wähle einen **markanten Punkt** in deinem Bild (z. B. eine Straßenkreuzung oder ein Gebäude).  
-3. Gib die **bekannten Koordinaten** manuell ein oder wähle sie direkt aus einer Basiskarte:  
-   - Klicke auf **Aus Kartenansicht**.  
-   - QGIS wechselt automatisch zur Hauptkarte – hier kannst du den Punkt markieren.  
-   - Die Koordinaten werden automatisch übernommen.  
 
-**Hinweis:** Wiederhole diesen Schritt für mindestens **4 Passpunkte** (mehr Punkte verbessern die Genauigkeit).  
 
----
+Adding XYZ Tiles
 
-## 5. Transformationseinstellungen wählen  
+To add XYZ tiles (e.g. Google Satellite):
 
-### Transformationstyp  
+1. Right-click on XYZ Tiles → Add New Connection
 
-Je nach Art der Verzerrung der Karte kann eine geeignete Transformation gewählt werden:  
 
-| **Transformationstyp** | **Beschreibung** | **Anwendungsfälle** |
-|------------------------|-----------------|----------------------|
-| **Linear (Affine)** | Verschiebt, skaliert, dreht und verzerrt das Bild, während gerade Linien beibehalten werden. Mindestens **3 Punkte** erforderlich. | Wenn die Karte nur geringe Verzerrungen aufweist. |
-| **Polynomial 1 (Linear)** | Identisch zur Affinen Transformation. Nutzt eine einfache mathematische Beziehung. **Mindestens 3 Punkte erforderlich.** | Für Karten mit geringen Verzerrungen. |
-| **Polynomial 2 (Quadratisch)** | Fügt eine quadratische Krümmung hinzu. **Mindestens 6 Punkte erforderlich.** | Falls die ursprüngliche Karte mäßige Verzerrungen aufweist. |
-| **Polynomial 3 (Kubisch)** | Nutzt eine komplexere Berechnung für starke Verzerrungen. **Mindestens 10 Punkte erforderlich.** | Historische Karten mit großen Deformationen. |
-| **Thin Plate Spline (TPS)** | Ein elastisches Modell für flexible Verformungen ohne feste mathematische Funktion. **Mindestens 3 Punkte erforderlich.** | Karten mit starken lokalen Verzerrungen (z. B. handgezeichnete Karten). |
-| **Projective Transformation** | Erlaubt perspektivische Verzerrungen, um ein Bild an eine flache Ebene anzupassen. **Mindestens 4 Punkte erforderlich.** | Luft- und Satellitenbilder. |
-| **Helmert Transformation** | Skalierung, Rotation und Verschiebung ohne Verzerrung. **Mindestens 2 Punkte erforderlich.** | Wenn nur eine Drehung oder Verschiebung nötig ist. |
+2. Add the source:
 
-### Resampling-Methode  
+http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}
 
-Die Resampling-Methode bestimmt, wie die Pixelwerte interpoliert werden:  
 
-| **Methode** | **Beschreibung** | **Anwendungsfälle** |
-|------------|----------------|---------------------|
-| **Nächster Nachbar** | Wählt den Wert des nächstgelegenen Pixels. Schnell, aber Treppeneffekte möglich. | Kategorische Daten (z. B. Landnutzungskarten). |
-| **Bilineare Interpolation** | Mittelt die Werte der 4 nächsten Pixel für sanfte Übergänge. | Luft- und Satellitenbilder. |
-| **Kubische Faltung** | Nutzt 16 benachbarte Pixel für weichere Übergänge (kann leichte Unschärfe erzeugen). | Hochauflösende Rasterbilder. |
-| **Kubisch-Spline** | Verwendet eine mathematische Spline-Funktion für besonders weiche Interpolation. | Karten mit gleichmäßigen Übergängen, Höhenmodelle. |
-| **Lanczos** | Nutzt ein größeres Pixelumfeld für scharfe, präzise Interpolation. Rechenintensiv. | Hochpräzise Bildverarbeitung, Fernerkundung. |
 
-### Kompressionseinstellungen  
-
-| **Kompressionstyp** | **Beschreibung** | **Anwendungsfälle** |
-|---------------------|----------------|---------------------|
-| **None (Keine Kompression)** | Speichert Raster ohne Kompression. Maximale Qualität, aber große Datei. | Wenn Speicherplatz keine Rolle spielt. |
-| **LZW** | Verlustfreie Kompression, reduziert Dateigröße effizient. | Topografische Karten, DEMs. |
-| **PackBits** | Ältere, schnelle verlustfreie Kompression, aber weniger effizient als LZW. | Binäre Raster (z. B. Schwarz-Weiß-Scans). |
-| **DEFLATE (Zlib/GZIP)** | Verlustfreie, effektive Kompression mit mehr Rechenaufwand als LZW. | Große GeoTIFF-Dateien mit numerischen Daten. |
-
-Nach der Auswahl der Einstellungen den **Speicherort für die georeferenzierte Karte** auswählen und auf **OK** klicken.  
 
 ---
 
-## 6. Georeferenzierung starten  
+3. Load an Image into the Georeferencer
 
-1. Klicke auf **Starten** (grüner Pfeil).  
-2. QGIS verarbeitet das Bild und speichert es als **georeferenziertes Raster**.  
-3. Schließe den Georeferenzierer.  
+1. Open the Georeferencer via Layer → Georeferencing.
 
----
 
-## 7. Georeferenzierte Karte in QGIS laden  
+2. Click Open Raster (image icon).
 
-1. Gehe zu **Layer → Layer hinzufügen → Rasterebene hinzufügen**.  
-2. Wähle die **neu georeferenzierte TIFF-Datei** aus.  
-3. Überprüfe, ob die Karte mit anderen Basiskarten übereinstimmt.  
 
-**Tipp:** Falls die Karte nicht exakt passt, überprüfe die **Passpunkte und Transformationseinstellungen**.  
+3. Select your non-georeferenced map (e.g. a historical map as PNG, JPG, TIFF).
+
+
+
 
 ---
 
-## 8. PDF in GeoTIFF umwandeln  
+4. Set Ground Control Points (GCPs)
 
-Falls bereits eine **georeferenzierte PDF** existiert, kann sie in ein **GeoTIFF** umgewandelt werden:  
+Choose the Basis for Georeferencing
 
-1. Öffne **QGIS**.  
-2. Gehe zu **Raster → Umwandlung → Übersetzung (Konvertierung)**.  
-3. Wähle die **PDF-Datei** als Eingabe.  
-4. Setze das **Ausgabeformat auf GeoTIFF**.  
-5. Wähle ein passendes **Koordinatensystem (z. B. EPSG:4326)**.  
-6. Klicke auf **OK**, um die PDF in GeoTIFF zu konvertieren.  
+Option 1: Load a basemap in QGIS (e.g. OpenStreetMap) and manually transfer points.
 
-Falls das PDF mehrere Layer enthält, kann vor dem Export ein bestimmter Layer ausgewählt werden.  
+Option 2: Use known coordinates from map borders or distinctive features.
+
+
+Add Ground Control Points
+
+1. Click Add GCP Point (icon with the red cross).
+
+
+2. Select a distinctive point in your image (e.g. a road intersection or a building).
+
+
+3. Enter the known coordinates manually or select them directly from a basemap:
+
+Click From Map Canvas.
+
+QGIS automatically switches to the main map view, where you can mark the point.
+
+The coordinates are transferred automatically.
+
+
+
+
+Note: Repeat this step for at least 4 GCPs (more points improve accuracy).
+
+
+---
+
+5. Choose Transformation Settings
+
+Transformation Type
+
+Depending on the type of distortion in the map, an appropriate transformation can be selected:
+
+Transformation Type	Description	Use Cases
+
+Linear (Affine)	Translates, scales, rotates, and skews the image while preserving straight lines. Requires at least 3 points.	When the map has only minor distortions.
+Polynomial 1 (Linear)	Identical to the affine transformation. Uses a simple mathematical relationship. At least 3 points required.	For maps with minor distortions.
+Polynomial 2 (Quadratic)	Adds quadratic curvature. At least 6 points required.	If the original map shows moderate distortions.
+Polynomial 3 (Cubic)	Uses a more complex calculation for strong distortions. At least 10 points required.	Historical maps with major deformations.
+Thin Plate Spline (TPS)	An elastic model for flexible deformations without a fixed mathematical function. At least 3 points required.	Maps with strong local distortions (e.g. hand-drawn maps).
+Projective Transformation	Allows perspective distortions to fit an image onto a flat plane. At least 4 points required.	Aerial and satellite imagery.
+Helmert Transformation	Scaling, rotation, and translation without distortion. At least 2 points required.	When only rotation or translation is needed.
+
+
+Resampling Method
+
+The resampling method determines how pixel values are interpolated:
+
+Method	Description	Use Cases
+
+Nearest Neighbor	Takes the value of the nearest pixel. Fast, but stair-step effects may occur.	Categorical data (e.g. land use maps).
+Bilinear Interpolation	Averages the values of the 4 nearest pixels for smooth transitions.	Aerial and satellite imagery.
+Cubic Convolution	Uses 16 neighboring pixels for smoother transitions (may introduce slight blur).	High-resolution raster images.
+Cubic Spline	Uses a mathematical spline function for very smooth interpolation.	Maps with smooth transitions, elevation models.
+Lanczos	Uses a larger pixel neighborhood for sharp, precise interpolation. Computationally intensive.	High-precision image processing, remote sensing.
+
+
+Compression Settings
+
+Compression Type	Description	Use Cases
+
+None (No Compression)	Stores the raster without compression. Maximum quality, but large file size.	When storage space is not a concern.
+LZW	Lossless compression, efficiently reduces file size.	Topographic maps, DEMs.
+PackBits	Older, fast lossless compression, but less efficient than LZW.	Binary rasters (e.g. black-and-white scans).
+DEFLATE (Zlib/GZIP)	Lossless, effective compression with higher computational cost than LZW.	Large GeoTIFF files with numeric data.
+
+
+After selecting the settings, choose the output location for the georeferenced map and click OK.
+
+
+---
+
+6. Start Georeferencing
+
+1. Click Start (green arrow).
+
+
+2. QGIS processes the image and saves it as a georeferenced raster.
+
+
+3. Close the Georeferencer.
+
+
+
+
+---
+
+7. Load the Georeferenced Map in QGIS
+
+1. Go to Layer → Add Layer → Add Raster Layer.
+
+
+2. Select the newly georeferenced TIFF file.
+
+
+3. Check whether the map aligns with other basemaps.
+
+
+
+Tip: If the map does not align correctly, review the GCPs and transformation settings.
+
+
+---
+
+8. Convert PDF to GeoTIFF
+
+If a georeferenced PDF already exists, it can be converted to a GeoTIFF:
+
+1. Open QGIS.
+
+
+2. Go to Raster → Conversion → Translate (Convert).
+
+
+3. Select the PDF file as input.
+
+
+4. Set the output format to GeoTIFF.
+
+
+5. Choose an appropriate coordinate reference system (e.g. EPSG:4326).
+
+
+6. Click OK to convert the PDF to GeoTIFF.
+
+
+
+If the PDF contains multiple layers, a specific layer can be selected before export.
