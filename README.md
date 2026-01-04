@@ -1,4 +1,4 @@
-```markdown
+
 # QGIS Georeferencer – Quickstart
 
 ## 1. Prerequisites
@@ -137,4 +137,3 @@ For already georeferenced PDFs:
 6. Click **OK**
 
 > If the PDF contains multiple layers, select the required layer before export.
-```
